@@ -1,5 +1,5 @@
-<project name="BukkitSamplePlugin" default="dist" basedir=".">
-	<property name="pluginname" value="BukkitSamplePlugin"/>
+<project name="WolfSpawn" default="dist" basedir=".">
+	<property name="pluginname" value="WolfSpawn"/>
 	<property name="bukkit.jar" location="../Bukkit/dist/Bukkit.jar"/>
 	<property name="plugins" location="../../plugins/"/>
 

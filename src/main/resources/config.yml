@@ -1,0 +1,23 @@
+#                       #
+#        WolfSpawn      #
+#         config        #
+#                       #
+#
+# Permissions
+# WolfSpawn.putdown
+# WolfSpawn.respawn
+
+#All Messages
+# Enable sending any messages to players on events
+msg-send: true
+
+#Specific messages
+msg-death: true
+msg-wolf-putdown: true
+msg-putdown-toggle: true
+
+#Message text
+msg-wolf-putdown-text: '[WolfSpawn] You put down your wolf'
+msg-death-text: '[WolfSpawn] Your wolf ran home'
+msg-putdown-toggle-on-text: '[WolfSpawn] PutDown enabled - your wolves won't respawn'
+msg-putdown-toggle-off-text: '[WolfSpawn] PutDown disabled - your wolves will respawn again'

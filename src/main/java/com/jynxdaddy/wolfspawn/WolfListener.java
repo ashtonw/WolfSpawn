@@ -6,10 +6,8 @@ package com.jynxdaddy.wolfspawn;
 import java.util.logging.Logger;
 
 import net.minecraft.server.EntityWolf;
-import net.minecraft.server.World;
 
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.craftbukkit.entity.CraftWolf;
 import org.bukkit.entity.CreatureType;
 import org.bukkit.entity.LivingEntity;
@@ -25,7 +23,6 @@ import org.bukkit.event.entity.EntityListener;
  */
 public class WolfListener extends EntityListener {
 
-	@SuppressWarnings("unused")
 	private WolfSpawn plugin;
 	@SuppressWarnings("unused")
 	private static Logger log;
@@ -51,9 +48,11 @@ public class WolfListener extends EntityListener {
 			EntityWolf mcwolf = ((CraftWolf)  wolf).getHandle();
 			String owner = mcwolf.v();
 			
+			Player player = plugin.getServer().getPlayer(owner);
+			if (!plugin.getPermission(player, "WolfSpawn.respawn")) return;
+			
 			if (plugin.isPutDownPlayer(owner)) {
-				Player player = plugin.getServer().getPlayer(owner);
-				if (player != null)	player.sendMessage("[WolfSpawn] You put down your wolf");
+				plugin.sendMessage(player, WolfSpawn.Message.WOLF_PUT_DOWN);
 			}
 			else if (owner != null && owner.length() > 0) {
 				Location spawn = wolf.getWorld().getSpawnLocation();
@@ -65,8 +64,7 @@ public class WolfListener extends EntityListener {
 				newMcwolf.d(true); // owned?
 				newMcwolf.b(true); // sitting
 				
-				Player player = plugin.getServer().getPlayer(owner);
-				if (player != null)	player.sendMessage("[WolfSpawn] Your wolf ran home");
+				plugin.sendMessage(player, WolfSpawn.Message.WOLF_DEATH);
 			}
 		}
 	}

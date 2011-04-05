@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
  */
 public class PutDownCommand implements CommandExecutor {
 
-	@SuppressWarnings("unused")
 	private WolfSpawn plugin;
 	@SuppressWarnings("unused")
 	private static Logger log;
@@ -33,12 +32,15 @@ public class PutDownCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (sender instanceof Player) {
             Player player = (Player) sender;
+
+            if (!plugin.getPermission(player, "WolfSpawn.putdown")) return true;
+            
             if (plugin.addPutDownPlayer(player.getName())) {
-            	player.sendMessage("[WolfSpawn] PutDown enabled - your wolves won't respawn");
+            	plugin.sendMessage(player, WolfSpawn.Message.PUT_DOWN_TOGGLE_ON);
             }
             else {
             	plugin.removePutDownPlayer(player.getName()); //toggle off
-            	player.sendMessage("[WolfSpawn] PutDown disabled - your wolves will respawn again");
+            	plugin.sendMessage(player, WolfSpawn.Message.PUT_DOWN_TOGGLE_OFF);
             }
             return true;
         } else {

@@ -1,6 +1,6 @@
 name: WolfSpawn
 main: com.jynxdaddy.wolfspawn.WolfSpawn
-version: 0.1
+version: 0.2
 commands:
   putdown:
     description: Enables player to disable respawn for his wolves.

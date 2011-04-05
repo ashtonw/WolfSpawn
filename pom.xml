@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ashtonw.wolfspawn</groupId>
   <artifactId>WolfSpawn</artifactId>
-  <version>0.1</version>
+  <version>0.2</version>
   <name>WolfSpawn</name>
   <build>
       <plugins>

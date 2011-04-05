@@ -19,5 +19,5 @@ msg-putdown-toggle: true
 #Message text
 msg-wolf-putdown-text: '[WolfSpawn] You put down your wolf'
 msg-death-text: '[WolfSpawn] Your wolf ran home'
-msg-putdown-toggle-on-text: '[WolfSpawn] PutDown enabled - your wolves won't respawn'
+msg-putdown-toggle-on-text: "[WolfSpawn] PutDown enabled - your wolves won't respawn"
 msg-putdown-toggle-off-text: '[WolfSpawn] PutDown disabled - your wolves will respawn again'

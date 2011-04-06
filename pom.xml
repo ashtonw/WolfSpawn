@@ -2,8 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ashtonw.wolfspawn</groupId>
   <artifactId>WolfSpawn</artifactId>
-  <version>0.2</version>
+  <version>0.3</version>
   <name>WolfSpawn</name>
+  <url>https://github.com/ashtonw/WolfSpawn</url>
   <build>
       <plugins>
           <plugin>

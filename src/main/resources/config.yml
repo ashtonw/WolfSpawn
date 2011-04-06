@@ -8,9 +8,13 @@
 # WolfSpawn.respawn
 # WolfSpawn.spawn
 
+#do not change
+version: 0.3
+
 ## Options ##
 # min 0 max 20
 wolf-spawn-health: 5
+max-tamed-wolves: 10
 
 
 ## Messages ##

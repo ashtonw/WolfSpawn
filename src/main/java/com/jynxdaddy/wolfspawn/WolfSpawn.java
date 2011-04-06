@@ -59,10 +59,9 @@ public class WolfSpawn extends JavaPlugin {
 		
 		// Register our events
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Event.Type.ENTITY_DEATH, wolfListener,
-				Priority.Normal, this);
-		pm.registerEvent(Event.Type.PLAYER_INTERACT, playerListener,
-				Priority.Normal, this);
+		pm.registerEvent(Event.Type.ENTITY_DEATH, wolfListener,	Priority.Monitor, this);
+		//pm.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Monitor, this);
+		//pm.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Monitor, this);
 		
 		//register commands
 		getCommand("releasewolf").setExecutor(wolfCommand);

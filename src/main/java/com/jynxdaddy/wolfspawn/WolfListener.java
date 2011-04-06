@@ -49,8 +49,8 @@ public class WolfListener extends EntityListener {
 			Player player = plugin.getServer().getPlayer(owner);
 			if (!plugin.getPermission(player, "WolfSpawn.respawn")) return; //NPE?
 			
-			if (plugin.isPutDownPlayer(owner)) {
-				plugin.sendMessage(player, WolfSpawn.Message.WOLF_PUT_DOWN);
+			if (plugin.isReleasePlayer(owner)) {
+				plugin.sendMessage(player, WolfSpawn.Message.WOLF_RELEASE);
 			}
 			else if (owner != null && owner.length() > 0) {		
 				plugin.sendMessage(player, WolfSpawn.Message.WOLF_DEATH);

@@ -36,12 +36,14 @@ public class WolfSpawn extends JavaPlugin {
 	
 	private final WolfListener wolfListener = new WolfListener(this);
 	private final WPlayerListener playerListener = new WPlayerListener(this);
+	
+	private final WolfCommand wolfCommand = new WolfCommand(this);
 
 	public static Logger log = Logger.getLogger("Minecraft");
 	public Configuration cfg;
 	public static PermissionHandler permissions;
 	
-	private HashSet<String> putDownUsers = new HashSet<String>(10);
+	private HashSet<String> releaseUsers = new HashSet<String>(10);
 
 	public void onDisable() {
 		PluginDescriptionFile pdfFile = this.getDescription();
@@ -63,8 +65,8 @@ public class WolfSpawn extends JavaPlugin {
 				Priority.Normal, this);
 		
 		//register commands
-		getCommand("putdown").setExecutor(new WolfCommand(this));
-		getCommand("spawnwolf").setExecutor(new WolfCommand(this));
+		getCommand("releasewolf").setExecutor(wolfCommand);
+		getCommand("spawnwolf").setExecutor(wolfCommand);
 
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info(pdfFile.getName() + " version " + pdfFile.getVersion()
@@ -92,16 +94,16 @@ public class WolfSpawn extends JavaPlugin {
 		return permissions.has(player, permission);
 	}
 
-	public boolean addPutDownPlayer(String name) {
-		return putDownUsers.add(name);
+	public boolean addReleasePlayer(String name) {
+		return releaseUsers.add(name);
 	}
 	
-	public boolean isPutDownPlayer(String name) {
-		return putDownUsers.contains(name);
+	public boolean isReleasePlayer(String name) {
+		return releaseUsers.contains(name);
 	}
 	
-	public boolean removePutDownPlayer(String name) {
-		return putDownUsers.remove(name);
+	public boolean removeReleasePlayer(String name) {
+		return releaseUsers.remove(name);
 	}
 	
 	/*
@@ -131,9 +133,9 @@ public class WolfSpawn extends JavaPlugin {
 	}
 	
 	public enum Message {
-		PUT_DOWN_TOGGLE_ON,
-		PUT_DOWN_TOGGLE_OFF,
-		WOLF_PUT_DOWN,
+		RELEASE_TOGGLE_ON,
+		RELEASE_TOGGLE_OFF,
+		WOLF_RELEASE,
 		WOLF_DEATH
 	}
 	
@@ -142,17 +144,17 @@ public class WolfSpawn extends JavaPlugin {
 		if (!cfg.getBoolean("msg-send", true)) return true;
 		
 		switch (msg) {
-		case PUT_DOWN_TOGGLE_ON:
-			if (!cfg.getBoolean("msg-putdown-toggle", true)) break;
-			player.sendMessage(cfg.getString("msg-putdown-toggle-on-text", ""));
+		case RELEASE_TOGGLE_ON:
+			if (!cfg.getBoolean("msg-release-toggle", true)) break;
+			player.sendMessage(cfg.getString("msg-release-toggle-on-text", ""));
 			break;
-		case PUT_DOWN_TOGGLE_OFF:
-			if (!cfg.getBoolean("msg-putdown-toggle", true)) break;
-			player.sendMessage(cfg.getString("msg-putdown-toggle-off-text", ""));
+		case RELEASE_TOGGLE_OFF:
+			if (!cfg.getBoolean("msg-release-toggle", true)) break;
+			player.sendMessage(cfg.getString("msg-release-toggle-off-text", ""));
 			break;
-		case WOLF_PUT_DOWN:
-			if (!cfg.getBoolean("msg-wolf-putdown", true)) break;
-			player.sendMessage(cfg.getString("msg-wolf-putdown-text", ""));
+		case WOLF_RELEASE:
+			if (!cfg.getBoolean("msg-wolf-release", true)) break;
+			player.sendMessage(cfg.getString("msg-wolf-release-text", ""));
 			break;
 		case WOLF_DEATH:
 			if (!cfg.getBoolean("msg-death", true)) break;
@@ -173,7 +175,7 @@ public class WolfSpawn extends JavaPlugin {
 		int health = cfg.getInt("wolf-respawn-health", 5);
 		health = health > 0 && health <= 20 ? health : 5;
 		if (health <= 0 || health > 20) health = 5;
-		System.out.println("SPAWNING WOLF FOR " + owner);
+		
 		EntityWolf newMcwolf = ((CraftWolf)  newWolf).getHandle();
 		newMcwolf.a(owner); //setOwner
 		newMcwolf.d(owned); // owned?

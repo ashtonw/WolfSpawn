@@ -4,8 +4,9 @@
 #                       #
 #
 # Permissions
-# WolfSpawn.putdown
+# WolfSpawn.release
 # WolfSpawn.respawn
+# WolfSpawn.spawn
 
 ## Options ##
 # min 0 max 20
@@ -18,11 +19,11 @@ msg-send: true
 
 #Specific messages
 msg-death: true
-msg-wolf-putdown: true
-msg-putdown-toggle: true
+msg-wolf-release: true
+msg-release-toggle: true
 
 #Message text
-msg-wolf-putdown-text: '[WolfSpawn] You put down your wolf'
+msg-wolf-release-text: '[WolfSpawn] You released your wolf'
 msg-death-text: '[WolfSpawn] Your wolf ran home'
-msg-putdown-toggle-on-text: "[WolfSpawn] PutDown enabled - your wolves won't respawn"
-msg-putdown-toggle-off-text: '[WolfSpawn] PutDown disabled - your wolves will respawn again'
+msg-release-toggle-on-text: "[WolfSpawn] Release enabled - your wolves won't respawn"
+msg-release-toggle-off-text: '[WolfSpawn] Release disabled - your wolves will respawn again'

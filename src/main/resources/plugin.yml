@@ -2,9 +2,10 @@ name: WolfSpawn
 main: com.jynxdaddy.wolfspawn.WolfSpawn
 version: 0.2
 commands:
-  putdown:
+  releasewolf:
     description: Enables player to disable respawn for his wolves.
-    usage: "Usage: '/putdown' to stop your wolves respawning."
+    usage: "Usage: '/releasewolf' to stop your wolves respawning."
   spawnwolf:
     description: Spawn a wolf for a player
     usage: "Usage: '/spawnwolf notch' to spawn notch a wolf"
+    

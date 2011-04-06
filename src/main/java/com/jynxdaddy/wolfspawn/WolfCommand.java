@@ -12,7 +12,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 /**
- * Handler for /putdown command
+ * Handler for commands
  * @author Ashton
  *
  */
@@ -35,24 +35,24 @@ public class WolfCommand implements CommandExecutor {
         if (label.compareTo("spawnwolf") == 0)
         	return spawnWolf(sender, command, label, args);
         
-        if (label.compareTo("putdown") == 0)
-        	return putDown(sender, command, label, args);
+        if (label.compareTo("releasewolf") == 0)
+        	return release(sender, command, label, args);
         
 		return false;
 	}
 
-	private boolean putDown(CommandSender sender, Command command, String label, String[] args) {
+	private boolean release(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
             Player player = (Player) sender;
             
-            if (!plugin.getPermission(player, "WolfSpawn.putdown")) return true;
+            if (!plugin.getPermission(player, "WolfSpawn.release")) return true;
             
-            if (plugin.addPutDownPlayer(player.getName())) {
-            	plugin.sendMessage(player, WolfSpawn.Message.PUT_DOWN_TOGGLE_ON);
+            if (plugin.addReleasePlayer(player.getName())) {
+            	plugin.sendMessage(player, WolfSpawn.Message.RELEASE_TOGGLE_ON);
             }
             else {
-            	plugin.removePutDownPlayer(player.getName()); //toggle off
-            	plugin.sendMessage(player, WolfSpawn.Message.PUT_DOWN_TOGGLE_OFF);
+            	plugin.removeReleasePlayer(player.getName()); //toggle off
+            	plugin.sendMessage(player, WolfSpawn.Message.RELEASE_TOGGLE_OFF);
             }
             return true;
         } else {

@@ -8,6 +8,13 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
+import net.minecraft.server.EntityWolf;
+
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.craftbukkit.entity.CraftWolf;
+import org.bukkit.entity.CreatureType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
@@ -74,6 +81,10 @@ public class WolfSpawn extends JavaPlugin {
 	              log.info("Permission system not detected");
 	          }
 	      }
+	}
+	
+	public boolean permsOn() {
+		return WolfSpawn.permissions != null;
 	}
 	
 	public boolean getPermission(Player player, String permission) {
@@ -151,6 +162,20 @@ public class WolfSpawn extends JavaPlugin {
 			break;
 		}
 		return true;
+	}
+	
+	public void spawnWolf(Location spawn, World world, String owner) {
+		LivingEntity newWolf = world.spawnCreature(spawn, CreatureType.WOLF);
+		
+		int health = cfg.getInt("wolf-respawn-health", 5);
+		health = health > 0 && health <= 20 ? health : 5;
+		if (health <= 0 || health > 20) health = 5;
+		
+		EntityWolf newMcwolf = ((CraftWolf)  newWolf).getHandle();
+		newMcwolf.a(owner == null ? "" : owner); //setOwner
+		newMcwolf.d(true); // owned?
+		newMcwolf.b(true); // sitting
+		newMcwolf.health = health;
 	}
 
 }

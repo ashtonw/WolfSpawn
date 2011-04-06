@@ -5,16 +5,10 @@ package com.jynxdaddy.wolfspawn;
 
 import java.util.logging.Logger;
 
-import net.minecraft.server.EntityWolf;
-
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.craftbukkit.entity.CraftWolf;
-import org.bukkit.entity.CreatureType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 /**
@@ -70,6 +64,20 @@ public class WolfCommand implements CommandExecutor {
 		
 		Player player = null;
 		
+		//Permissions...
+		boolean access = false;
+		if (sender instanceof Player && plugin.permsOn() && plugin.getPermission((Player)sender, "WolfSpawn.spawn"))
+			access = true;
+		else if (sender.isOp() || sender instanceof ConsoleCommandSender)
+			access = true;
+		
+		if (!access) {
+			sender.sendMessage("[WolfSpawn] You lack permission to use that command");
+			return true;
+		}
+		
+		//Logic
+		
 		if (sender instanceof Player)
 			player = (Player) sender;
 		
@@ -77,28 +85,19 @@ public class WolfCommand implements CommandExecutor {
 			Player targetPlayer = sender.getServer().getPlayer(args[0]);
 			if (targetPlayer != null)
 				player = targetPlayer;
-			else
+			else {
 				sender.sendMessage("[WolfSpawn] No user '" + args[0] + "' found");
+				return true;
+			}
 		}
 		
-		if (sender instanceof ConsoleCommandSender && player == null)
-			return false;
-		
+		if (sender instanceof ConsoleCommandSender && player == null) {
+			sender.sendMessage("[WolfSpawn] Console must specify player");
+			return false; //show usage
+		}
+			
 		boolean wild = (args.length == 2 && args[1].equalsIgnoreCase("wild"));
-		//spawn wolf, should reuse code somewhere...
-		Location spawn = player.getLocation();
-		LivingEntity newWolf = player.getWorld().spawnCreature(spawn,
-				CreatureType.WOLF);
-		
-		int health = plugin.cfg.getInt("wolf-respawn-health", 5);
-		health = health > 0 && health <= 20 ? health : 5;
-		if (health <= 0 || health > 20) health = 5;
-		
-		EntityWolf newMcwolf = ((CraftWolf)  newWolf).getHandle();
-		newMcwolf.a(wild ? "" : player.getName()); //setOwner
-		newMcwolf.d(true); // owned?
-		newMcwolf.b(true); // sitting
-		newMcwolf.health = health;
+		plugin.spawnWolf(player.getLocation(), player.getWorld(), wild ? "" : player.getName());
 		
 		return true;
 	}

@@ -8,13 +8,11 @@ import java.util.logging.Logger;
 import net.minecraft.server.EntityWolf;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.craftbukkit.entity.CraftWolf;
-import org.bukkit.entity.CreatureType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.entity.EntityEvent;
 import org.bukkit.event.entity.EntityListener;
 
 /**
@@ -41,7 +39,7 @@ public class WolfListener extends EntityListener {
 	 */
 	@Override
 	public void onEntityDeath(EntityDeathEvent event) {
-		if (isWolf(event)) {
+		if (event.getEntity() instanceof Wolf) {
 			Wolf wolf = (Wolf) event.getEntity();
 			
 			//Workaround
@@ -49,33 +47,18 @@ public class WolfListener extends EntityListener {
 			String owner = mcwolf.v();
 			
 			Player player = plugin.getServer().getPlayer(owner);
-			if (!plugin.getPermission(player, "WolfSpawn.respawn")) return; //NPE
+			if (!plugin.getPermission(player, "WolfSpawn.respawn")) return; //NPE?
 			
 			if (plugin.isPutDownPlayer(owner)) {
 				plugin.sendMessage(player, WolfSpawn.Message.WOLF_PUT_DOWN);
 			}
-			else if (owner != null && owner.length() > 0) {
-				Location spawn = wolf.getWorld().getSpawnLocation();
-				LivingEntity newWolf = wolf.getWorld().spawnCreature(spawn,
-						CreatureType.WOLF);
-				
-				int health = plugin.cfg.getInt("wolf-respawn-health", 5);
-				health = health > 0 && health <= 20 ? health : 5;
-				if (health <= 0 || health > 20) health = 5;
-				
-				EntityWolf newMcwolf = ((CraftWolf)  newWolf).getHandle();
-				newMcwolf.a(owner); //setOwner
-				newMcwolf.d(true); // owned?
-				newMcwolf.b(true); // sitting
-				newMcwolf.health = health;
-				
+			else if (owner != null && owner.length() > 0) {		
 				plugin.sendMessage(player, WolfSpawn.Message.WOLF_DEATH);
+				World world = wolf.getWorld();
+				Location spawn = world.getSpawnLocation();
+				plugin.spawnWolf(spawn, world, owner);
 			}
 		}
-	}
-
-	private boolean isWolf(EntityEvent event) {
-		return event.getEntity() instanceof Wolf;
 	}
 
 }

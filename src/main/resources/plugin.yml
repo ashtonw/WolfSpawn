@@ -5,3 +5,6 @@ commands:
   putdown:
     description: Enables player to disable respawn for his wolves.
     usage: "Usage: '/putdown' to stop your wolves respawning."
+  spawnwolf:
+    description: Spawn a wolf for a player
+    usage: "Usage: '/spawnwolf notch' to spawn notch a wolf"

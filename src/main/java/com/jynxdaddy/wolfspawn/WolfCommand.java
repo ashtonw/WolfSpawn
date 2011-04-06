@@ -15,15 +15,15 @@ import org.bukkit.entity.Player;
  * @author Ashton
  *
  */
-public class PutDownCommand implements CommandExecutor {
+public class WolfCommand implements CommandExecutor {
 
 	private WolfSpawn plugin;
 	@SuppressWarnings("unused")
 	private static Logger log;
 	
-	public PutDownCommand(WolfSpawn wolfSpawn) {
+	public WolfCommand(WolfSpawn wolfSpawn) {
 		this.plugin = wolfSpawn;
-		PutDownCommand.log = WolfSpawn.log;
+		WolfCommand.log = WolfSpawn.log;
 	}
 
 	/* (non-Javadoc)

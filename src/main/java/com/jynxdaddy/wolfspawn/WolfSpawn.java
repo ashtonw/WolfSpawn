@@ -56,7 +56,7 @@ public class WolfSpawn extends JavaPlugin {
 				Priority.Normal, this);
 		
 		//register commands
-		getCommand("putdown").setExecutor(new PutDownCommand(this));
+		getCommand("putdown").setExecutor(new WolfCommand(this));
 
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info(pdfFile.getName() + " version " + pdfFile.getVersion()

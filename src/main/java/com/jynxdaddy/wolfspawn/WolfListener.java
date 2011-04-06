@@ -59,10 +59,15 @@ public class WolfListener extends EntityListener {
 				LivingEntity newWolf = wolf.getWorld().spawnCreature(spawn,
 						CreatureType.WOLF);
 				
+				int health = plugin.cfg.getInt("wolf-respawn-health", 5);
+				health = health > 0 && health <= 20 ? health : 5;
+				if (health <= 0 || health > 20) health = 5;
+				
 				EntityWolf newMcwolf = ((CraftWolf)  newWolf).getHandle();
 				newMcwolf.a(owner); //setOwner
 				newMcwolf.d(true); // owned?
 				newMcwolf.b(true); // sitting
+				newMcwolf.health = health;
 				
 				plugin.sendMessage(player, WolfSpawn.Message.WOLF_DEATH);
 			}

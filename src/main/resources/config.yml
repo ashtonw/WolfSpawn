@@ -7,7 +7,12 @@
 # WolfSpawn.putdown
 # WolfSpawn.respawn
 
-#All Messages
+## Options ##
+# min 0 max 20
+wolf-spawn-health: 5
+
+
+## Messages ##
 # Enable sending any messages to players on events
 msg-send: true
 

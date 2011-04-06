@@ -81,7 +81,7 @@ public class WolfCommand implements CommandExecutor {
 		if (sender instanceof Player)
 			player = (Player) sender;
 		
-		if (args.length == 1) {
+		if (args.length >= 1) {
 			Player targetPlayer = sender.getServer().getPlayer(args[0]);
 			if (targetPlayer != null)
 				player = targetPlayer;
@@ -95,8 +95,8 @@ public class WolfCommand implements CommandExecutor {
 			sender.sendMessage("[WolfSpawn] Console must specify player");
 			return false; //show usage
 		}
-			
-		boolean wild = (args.length == 2 && args[1].equalsIgnoreCase("wild"));
+		
+		boolean wild = (args.length >= 2 && args[1].startsWith("wild"));
 		plugin.spawnWolf(player.getLocation(), player.getWorld(), wild ? "" : player.getName());
 		
 		return true;

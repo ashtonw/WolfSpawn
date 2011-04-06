@@ -167,14 +167,17 @@ public class WolfSpawn extends JavaPlugin {
 	public void spawnWolf(Location spawn, World world, String owner) {
 		LivingEntity newWolf = world.spawnCreature(spawn, CreatureType.WOLF);
 		
+		owner = owner == null ? "" : owner;
+		boolean owned = owner != ""; 
+		
 		int health = cfg.getInt("wolf-respawn-health", 5);
 		health = health > 0 && health <= 20 ? health : 5;
 		if (health <= 0 || health > 20) health = 5;
-		
+		System.out.println("SPAWNING WOLF FOR " + owner);
 		EntityWolf newMcwolf = ((CraftWolf)  newWolf).getHandle();
-		newMcwolf.a(owner == null ? "" : owner); //setOwner
-		newMcwolf.d(true); // owned?
-		newMcwolf.b(true); // sitting
+		newMcwolf.a(owner); //setOwner
+		newMcwolf.d(owned); // owned?
+		newMcwolf.b(owned); // sitting
 		newMcwolf.health = health;
 	}
 

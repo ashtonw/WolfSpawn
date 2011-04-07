@@ -7,8 +7,6 @@ import java.util.logging.Logger;
 
 import net.minecraft.server.EntityWolf;
 
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.craftbukkit.entity.CraftWolf;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
@@ -54,9 +52,7 @@ public class WolfListener extends EntityListener {
 			}
 			else if (owner != null && owner.length() > 0) {		
 				plugin.sendMessage(player, WolfSpawn.Message.WOLF_DEATH);
-				World world = wolf.getWorld();
-				Location spawn = world.getSpawnLocation();
-				plugin.spawnWolf(spawn, world, owner);
+				plugin.spawnWolf(player, wolf.getWorld(), owner);
 			}
 		}
 	}

@@ -14,6 +14,8 @@ version: 0.3
 ## Options ##
 # min 0 max 20
 wolf-spawn-health: 5
+# delay in seconds
+wolf-spawn-delay: 60
 max-tamed-wolves: 10
 
 

@@ -97,7 +97,7 @@ public class WolfCommand implements CommandExecutor {
 		}
 		
 		boolean wild = (args.length >= 2 && args[1].startsWith("wild"));
-		plugin.spawnWolf(player.getLocation(), player.getWorld(), wild ? "" : player.getName());
+		plugin.spawnWolf(player, player.getWorld(), wild ? "" : player.getName(), false);
 		
 		return true;
 	}

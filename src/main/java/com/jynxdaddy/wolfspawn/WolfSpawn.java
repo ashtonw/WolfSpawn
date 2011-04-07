@@ -10,7 +10,6 @@ import java.util.logging.Logger;
 
 import net.minecraft.server.EntityWolf;
 
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.entity.CraftWolf;
 import org.bukkit.entity.CreatureType;
@@ -35,6 +34,7 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 public class WolfSpawn extends JavaPlugin {
 	
 	private final WolfListener wolfListener = new WolfListener(this);
+	@SuppressWarnings("unused")
 	private final WPlayerListener playerListener = new WPlayerListener(this);
 	
 	private final WolfCommand wolfCommand = new WolfCommand(this);
@@ -49,6 +49,8 @@ public class WolfSpawn extends JavaPlugin {
 		PluginDescriptionFile pdfFile = this.getDescription();
 		log.info(pdfFile.getName() + " version " + pdfFile.getVersion()
 				+ " disabled!");
+		
+		
 	}
 
 	public void onEnable() {
@@ -130,7 +132,7 @@ public class WolfSpawn extends JavaPlugin {
 			}
 		}
 	}
-	
+
 	public enum Message {
 		RELEASE_TOGGLE_ON,
 		RELEASE_TOGGLE_OFF,
@@ -164,22 +166,50 @@ public class WolfSpawn extends JavaPlugin {
 		}
 		return true;
 	}
-	
-	public void spawnWolf(Location spawn, World world, String owner) {
-		LivingEntity newWolf = world.spawnCreature(spawn, CreatureType.WOLF);
-		
-		owner = owner == null ? "" : owner;
-		boolean owned = owner != ""; 
-		
+	public void spawnWolf(Player player, World world, String owner) {
+		boolean onPlayer = this.getPermission(player, "WolfSpawn.spawnatplayer") && cfg.getBoolean("wolf-spawn-onplayer", true);
+		spawnWolf(player, world, owner, onPlayer);
+	}
+	public void spawnWolf(Player player, World world, String owner, boolean onPlayer) {
+
 		int health = cfg.getInt("wolf-respawn-health", 5);
 		health = health > 0 && health <= 20 ? health : 5;
 		if (health <= 0 || health > 20) health = 5;
 		
-		EntityWolf newMcwolf = ((CraftWolf)  newWolf).getHandle();
-		newMcwolf.a(owner); //setOwner
-		newMcwolf.d(owned); // owned?
-		newMcwolf.b(owned); // sitting
-		newMcwolf.health = health;
+		Runnable task = new SpawnWolfTask(player, world, owner, health, onPlayer);
+		// seconds ~= 20 * ticks
+		getServer().getScheduler().scheduleAsyncDelayedTask(this, task, 20 * cfg.getInt("wolf-respawn-delay", 30));
+		
+	}
+	
+	public class SpawnWolfTask implements Runnable {
+		
+		private String owner;
+		private Player player;
+		private World world;
+		private int health;
+		private boolean onPlayer;
+		
+		public SpawnWolfTask(Player player, World world, String owner, int health, boolean onPlayer) {
+			this.player = player;
+			this.world = world;
+			this.owner = owner;
+			this.health = health;
+			this.onPlayer = onPlayer;
+		}
+
+		public void run() {
+			LivingEntity newWolf = world.spawnCreature(onPlayer ? player.getLocation() : player.getWorld().getSpawnLocation(), CreatureType.WOLF);
+			
+			owner = owner == null ? "" : owner;
+			boolean owned = owner != ""; 
+			
+			EntityWolf newMcwolf = ((CraftWolf)  newWolf).getHandle();
+			newMcwolf.a(owner); //setOwner
+			newMcwolf.d(owned); // sitting
+			newMcwolf.b(owned); // ?
+			newMcwolf.health = health;
+		}
 	}
 
 }

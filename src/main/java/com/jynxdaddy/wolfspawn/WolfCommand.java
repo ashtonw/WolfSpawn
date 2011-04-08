@@ -38,15 +38,20 @@ public class WolfCommand implements CommandExecutor {
         if (label.compareTo("releasewolf") == 0)
         	return release(sender, command, label, args);
         
+        if (label.compareTo("releaseAll") == 0)
+        	;
+        
+        
+        
 		return false;
 	}
 
 	private boolean release(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
             Player player = (Player) sender;
-            
+            System.out.println("TRYING TO RELEASE");
             if (!plugin.getPermission(player, "WolfSpawn.release")) return true;
-            
+            System.out.println("KEEP TRYING");
             if (plugin.addReleasePlayer(player.getName())) {
             	plugin.sendMessage(player, WolfSpawn.Message.RELEASE_TOGGLE_ON);
             }
@@ -96,8 +101,15 @@ public class WolfCommand implements CommandExecutor {
 			return false; //show usage
 		}
 		
-		boolean wild = (args.length >= 2 && args[1].startsWith("wild"));
-		plugin.spawnWolf(player, player.getWorld(), wild ? "" : player.getName(), false);
+		boolean wild = false;
+		boolean angry = false;
+		if ((args.length >= 2 && args[1].startsWith("wild")))
+				wild = true;
+		else if ((args.length >= 2 && args[1].startsWith("angry")))
+				angry = true;
+		
+		plugin.spawnWolf(player, player.getWorld(), wild || angry ? "" : player.getName(), true, angry);
+		sender.sendMessage("[WolfSpawn] Spawning Wolf");
 		
 		return true;
 	}

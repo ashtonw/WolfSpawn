@@ -8,12 +8,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
-import net.minecraft.server.EntityWolf;
 
 import org.bukkit.World;
-import org.bukkit.craftbukkit.entity.CraftWolf;
-import org.bukkit.entity.CreatureType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.Event.Priority;
@@ -47,7 +43,7 @@ public class WolfSpawn extends JavaPlugin {
 
 	public void onDisable() {
 		PluginDescriptionFile pdfFile = this.getDescription();
-		log.info(pdfFile.getName() + " version " + pdfFile.getVersion()
+		log.info("["+ pdfFile.getName() + "] version " + pdfFile.getVersion()
 				+ " disabled!");
 		
 		
@@ -56,7 +52,10 @@ public class WolfSpawn extends JavaPlugin {
 	public void onEnable() {
 		//Config
 		readyConfig();
+		PluginDescriptionFile pdfFile = this.getDescription();
 		cfg = this.getConfiguration();
+		if (cfg.getDouble("version", 0.0) < Double.parseDouble(pdfFile.getVersion()))
+				log.info("[WolfSpawn] config.yml out of date, delete and restart");
 		setupPermissions();
 		
 		// Register our events
@@ -69,7 +68,7 @@ public class WolfSpawn extends JavaPlugin {
 		getCommand("releasewolf").setExecutor(wolfCommand);
 		getCommand("spawnwolf").setExecutor(wolfCommand);
 
-		PluginDescriptionFile pdfFile = this.getDescription();
+		
 		log.info(pdfFile.getName() + " version " + pdfFile.getVersion()
 				+ " is enabled!");
 	}
@@ -81,7 +80,7 @@ public class WolfSpawn extends JavaPlugin {
 	          if (test != null) {
 	              WolfSpawn.permissions = ((Permissions)test).getHandler();
 	          } else {
-	              log.info("Permission system not detected");
+	              log.info("[WolfSpawn] Permission system not detected");
 	          }
 	      }
 	}
@@ -137,79 +136,75 @@ public class WolfSpawn extends JavaPlugin {
 		RELEASE_TOGGLE_ON,
 		RELEASE_TOGGLE_OFF,
 		WOLF_RELEASE,
-		WOLF_DEATH
+		WOLF_DEATH, WOLF_SPAWN
 	}
 	
 	public boolean sendMessage(Player player, Message msg) {
 		if (player == null) return false;
-		if (!cfg.getBoolean("msg-send", true)) return true;
+		if (!cfg.getBoolean("messages.enabled", true)) return true;
 		
 		switch (msg) {
 		case RELEASE_TOGGLE_ON:
-			if (!cfg.getBoolean("msg-release-toggle", true)) break;
-			player.sendMessage(cfg.getString("msg-release-toggle-on-text", ""));
+			if (!cfg.getBoolean("messages.release-toggle-on.enabled", true)) break;
+			sendMsg(player,cfg.getString("messages.release-toggle-on.text", ""));
 			break;
 		case RELEASE_TOGGLE_OFF:
-			if (!cfg.getBoolean("msg-release-toggle", true)) break;
-			player.sendMessage(cfg.getString("msg-release-toggle-off-text", ""));
+			if (!cfg.getBoolean("messages.release-toggle-off.enabled", true)) break;
+			sendMsg(player,cfg.getString("messages.release-toggle-off.text", ""));
 			break;
 		case WOLF_RELEASE:
-			if (!cfg.getBoolean("msg-wolf-release", true)) break;
-			player.sendMessage(cfg.getString("msg-wolf-release-text", ""));
+			if (!cfg.getBoolean("messages.release.enabled", true)) break;
+			sendMsg(player,cfg.getString("messages.release.text", ""));
 			break;
 		case WOLF_DEATH:
-			if (!cfg.getBoolean("msg-death", true)) break;
-			player.sendMessage(cfg.getString("msg-death-text", ""));
+			if (!cfg.getBoolean("messages.death.enabled", true)) break;
+			sendMsg(player,cfg.getString("messages.death.text", ""));
 			break;
+		case WOLF_SPAWN:
+			if (!cfg.getBoolean("messages.respawn.enabled", true)) break;
+			sendMsg(player,cfg.getString("messages.respawn.text", ""));
 		default:
 			break;
 		}
 		return true;
 	}
-	public void spawnWolf(Player player, World world, String owner) {
-		boolean onPlayer = this.getPermission(player, "WolfSpawn.spawnatplayer") && cfg.getBoolean("wolf-spawn-onplayer", true);
-		spawnWolf(player, world, owner, onPlayer);
+	
+	/**
+	 * Send message if not empty string.
+	 * 
+	 * @param player
+	 * @param msg
+	 */
+	private void sendMsg(Player player, String msg) {
+		if (msg != "") player.sendMessage(msg);
 	}
+	
+	public void respawnWolf(Player player, World world, String owner) {
+		boolean onPlayer = this.getPermission(player, "WolfSpawn.spawnatplayer") && cfg.getBoolean("wolf.spawn.on-player", true);
+		int delay = cfg.getInt("wolf.spawn.delay", 60);
+		delay = delay < 1 ? 1 : delay; 
+		spawnWolf(player, world, owner, onPlayer, cfg.getInt("wolf-respawn-delay", 60), false);
+	}
+	
 	public void spawnWolf(Player player, World world, String owner, boolean onPlayer) {
-
-		int health = cfg.getInt("wolf-respawn-health", 5);
+		spawnWolf(player, world, owner, onPlayer, 1, false);
+	}
+	
+	public void spawnWolf(Player player, World world, String owner, boolean onPlayer, boolean angry) {
+		spawnWolf(player, world, owner, onPlayer, 1, angry);
+	}
+	
+	public void spawnWolf(Player player, World world, String owner, boolean onPlayer, int delay, boolean isAngry) {
+		int health = cfg.getInt("wolf.spawn.health", 5);
 		health = health > 0 && health <= 20 ? health : 5;
 		if (health <= 0 || health > 20) health = 5;
 		
-		Runnable task = new SpawnWolfTask(player, world, owner, health, onPlayer);
+		SpawnWolfTask task = new SpawnWolfTask(this, player, world, owner, health, onPlayer);
+		task.setAngry(isAngry);
 		// seconds ~= 20 * ticks
-		getServer().getScheduler().scheduleAsyncDelayedTask(this, task, 20 * cfg.getInt("wolf-respawn-delay", 30));
+		log.info("[WolfSpawn] spawning wolf in " + (20 * delay) + " seconds");
+		getServer().getScheduler().scheduleAsyncDelayedTask(this, task, 20 * delay);
 		
-	}
-	
-	public class SpawnWolfTask implements Runnable {
-		
-		private String owner;
-		private Player player;
-		private World world;
-		private int health;
-		private boolean onPlayer;
-		
-		public SpawnWolfTask(Player player, World world, String owner, int health, boolean onPlayer) {
-			this.player = player;
-			this.world = world;
-			this.owner = owner;
-			this.health = health;
-			this.onPlayer = onPlayer;
-		}
-
-		public void run() {
-			LivingEntity newWolf = world.spawnCreature(onPlayer ? player.getLocation() : player.getWorld().getSpawnLocation(), CreatureType.WOLF);
-			
-			owner = owner == null ? "" : owner;
-			boolean owned = owner != ""; 
-			
-			EntityWolf newMcwolf = ((CraftWolf)  newWolf).getHandle();
-			newMcwolf.a(owner); //setOwner
-			newMcwolf.d(owned); // sitting
-			newMcwolf.b(owned); // ?
-			newMcwolf.health = health;
-		}
 	}
 
 }

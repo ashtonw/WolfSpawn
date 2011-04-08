@@ -52,7 +52,7 @@ public class WolfListener extends EntityListener {
 			}
 			else if (owner != null && owner.length() > 0) {		
 				plugin.sendMessage(player, WolfSpawn.Message.WOLF_DEATH);
-				plugin.spawnWolf(player, wolf.getWorld(), owner);
+				plugin.respawnWolf(player, wolf.getWorld(), owner);
 			}
 		}
 	}

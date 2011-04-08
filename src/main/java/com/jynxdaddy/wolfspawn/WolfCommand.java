@@ -49,9 +49,9 @@ public class WolfCommand implements CommandExecutor {
 	private boolean release(CommandSender sender, Command command, String label, String[] args) {
 		if (sender instanceof Player) {
             Player player = (Player) sender;
-            System.out.println("TRYING TO RELEASE");
+            
             if (!plugin.getPermission(player, "WolfSpawn.release")) return true;
-            System.out.println("KEEP TRYING");
+            
             if (plugin.addReleasePlayer(player.getName())) {
             	plugin.sendMessage(player, WolfSpawn.Message.RELEASE_TOGGLE_ON);
             }

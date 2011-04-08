@@ -45,7 +45,8 @@ public class WolfListener extends EntityListener {
 			String owner = mcwolf.v();
 			
 			Player player = plugin.getServer().getPlayer(owner);
-			if (!plugin.getPermission(player, "WolfSpawn.respawn")) return; //NPE?
+			
+			if (player == null || !plugin.getPermission(player, "WolfSpawn.respawn")) return;
 			
 			if (plugin.isReleasePlayer(owner)) {
 				plugin.sendMessage(player, WolfSpawn.Message.WOLF_RELEASE);

@@ -69,7 +69,7 @@ public class WolfSpawn extends JavaPlugin {
 		getCommand("spawnwolf").setExecutor(wolfCommand);
 
 		
-		log.info(pdfFile.getName() + " version " + pdfFile.getVersion()
+		log.info("["+ pdfFile.getName() + "] version " + pdfFile.getVersion()
 				+ " is enabled!");
 	}
 

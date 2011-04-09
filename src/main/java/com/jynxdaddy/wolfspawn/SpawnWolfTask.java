@@ -1,13 +1,8 @@
 package com.jynxdaddy.wolfspawn;
 
-import net.minecraft.server.EntityWolf;
-import net.minecraft.server.PathEntity;
-
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.entity.CraftWolf;
 import org.bukkit.entity.CreatureType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 
@@ -42,16 +37,10 @@ class SpawnWolfTask implements Runnable {
 	public void run() {
 		if (!player.isOnline()) return; //disconnected
 		Location location = onPlayer ? player.getLocation() : player.getWorld().getSpawnLocation();
-		Wolf newWolf = (Wolf) world.spawnCreature(location, CreatureType.WOLF);
+		UpdatedWolf wolf = new UpdatedWolf((Wolf) world.spawnCreature(location, CreatureType.WOLF));
 		String ownerName = owner == null ? "" : owner;
-		boolean owned = ownerName != ""; 
-		newWolf.setAngry(isAngry);
-		EntityWolf newMcwolf = ((CraftWolf)  newWolf).getHandle();
-		newMcwolf.a(ownerName); //setOwner
-		newMcwolf.d(owned); // tame
-		newMcwolf.a((PathEntity)null); // Clear path
-		newMcwolf.b(false);//owned); //sit
-		newMcwolf.health = health;
+		wolf.setAngry(isAngry);
+		wolf.setOwner(ownerName);
 		
 		plugin.sendMessage(player, WolfSpawn.Message.WOLF_SPAWN);
 	}

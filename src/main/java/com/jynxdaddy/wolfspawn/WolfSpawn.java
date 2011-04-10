@@ -19,6 +19,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.config.Configuration;
 
+import com.jynxdaddy.BetterConfig.BetterConfig;
 import com.nijiko.permissions.PermissionHandler;
 import com.nijikokun.bukkit.Permissions.Permissions;
 
@@ -36,7 +37,7 @@ public class WolfSpawn extends JavaPlugin {
 	private final WolfCommand wolfCommand = new WolfCommand(this);
 
 	public static Logger log = Logger.getLogger("Minecraft");
-	public Configuration cfg;
+	public BetterConfig cfg;
 	public static PermissionHandler permissions;
 	
 	private HashSet<String> releaseUsers = new HashSet<String>(10);
@@ -53,8 +54,9 @@ public class WolfSpawn extends JavaPlugin {
 		//Config
 		readyConfig();
 		PluginDescriptionFile pdfFile = this.getDescription();
-		cfg = this.getConfiguration();
-		if (cfg.getDouble("version", 0.0) < Double.parseDouble(pdfFile.getVersion()))
+		cfg = new BetterConfig(this);
+		//rethink this
+		if (cfg.getDouble("version") < Double.parseDouble(pdfFile.getVersion()))
 				log.info("[WolfSpawn] config.yml out of date, delete and restart");
 		setupPermissions();
 		
@@ -71,6 +73,8 @@ public class WolfSpawn extends JavaPlugin {
 		
 		log.info("["+ pdfFile.getName() + "] version " + pdfFile.getVersion()
 				+ " is enabled!");
+		///////////////////////////////////////////
+		getDatabase();
 	}
 
 	private void setupPermissions() {
@@ -141,28 +145,28 @@ public class WolfSpawn extends JavaPlugin {
 	
 	public boolean sendMessage(Player player, Message msg) {
 		if (player == null) return false;
-		if (!cfg.getBoolean("messages.enabled", true)) return true;
+		if (!cfg.getBoolean("messages.enabled")) return true;
 		
 		switch (msg) {
 		case RELEASE_TOGGLE_ON:
-			if (!cfg.getBoolean("messages.release-toggle-on.enabled", true)) break;
-			sendMsg(player,cfg.getString("messages.release-toggle-on.text", ""));
+			if (!cfg.getBoolean("messages.release-toggle-on.enabled")) break;
+			sendMsg(player,cfg.getString("messages.release-toggle-on.text"));
 			break;
 		case RELEASE_TOGGLE_OFF:
-			if (!cfg.getBoolean("messages.release-toggle-off.enabled", true)) break;
-			sendMsg(player,cfg.getString("messages.release-toggle-off.text", ""));
+			if (!cfg.getBoolean("messages.release-toggle-off.enabled")) break;
+			sendMsg(player,cfg.getString("messages.release-toggle-off.text"));
 			break;
 		case WOLF_RELEASE:
-			if (!cfg.getBoolean("messages.release.enabled", true)) break;
-			sendMsg(player,cfg.getString("messages.release.text", ""));
+			if (!cfg.getBoolean("messages.release.enabled")) break;
+			sendMsg(player,cfg.getString("messages.release.text"));
 			break;
 		case WOLF_DEATH:
-			if (!cfg.getBoolean("messages.death.enabled", true)) break;
-			sendMsg(player,cfg.getString("messages.death.text", ""));
+			if (!cfg.getBoolean("messages.death.enabled")) break;
+			sendMsg(player,cfg.getString("messages.death.text"));
 			break;
 		case WOLF_SPAWN:
-			if (!cfg.getBoolean("messages.respawn.enabled", true)) break;
-			sendMsg(player,cfg.getString("messages.respawn.text", ""));
+			if (!cfg.getBoolean("messages.respawn.enabled")) break;
+			sendMsg(player,cfg.getString("messages.respawn.text"));
 		default:
 			break;
 		}
@@ -180,10 +184,10 @@ public class WolfSpawn extends JavaPlugin {
 	}
 	
 	public void respawnWolf(Player player, World world, String owner) {
-		boolean onPlayer = this.getPermission(player, "WolfSpawn.spawnatplayer") && cfg.getBoolean("wolf.spawn.on-player", true);
-		int delay = cfg.getInt("wolf.spawn.delay", 60);
+		boolean onPlayer = this.getPermission(player, "WolfSpawn.spawnatplayer") && cfg.getBoolean("wolf.spawn.on-player");
+		int delay = cfg.getInt("wolf.spawn.delay");
 		delay = delay < 1 ? 1 : delay; 
-		spawnWolf(player, world, owner, onPlayer, cfg.getInt("wolf-respawn-delay", 60), false);
+		spawnWolf(player, world, owner, onPlayer, delay, false);
 	}
 	
 	public void spawnWolf(Player player, World world, String owner, boolean onPlayer) {
@@ -195,7 +199,7 @@ public class WolfSpawn extends JavaPlugin {
 	}
 	
 	public void spawnWolf(Player player, World world, String owner, boolean onPlayer, int delay, boolean isAngry) {
-		int health = cfg.getInt("wolf.spawn.health", 5);
+		int health = cfg.getInt("wolf.spawn.health");
 		health = health > 0 && health <= 20 ? health : 5;
 		if (health <= 0 || health > 20) health = 5;
 		

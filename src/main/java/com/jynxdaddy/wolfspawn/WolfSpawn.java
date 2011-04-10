@@ -8,7 +8,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Logger;
 
-
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -17,7 +16,6 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.config.Configuration;
 
 import com.jynxdaddy.BetterConfig.BetterConfig;
 import com.nijiko.permissions.PermissionHandler;
@@ -54,7 +52,7 @@ public class WolfSpawn extends JavaPlugin {
 		//Config
 		readyConfig();
 		PluginDescriptionFile pdfFile = this.getDescription();
-		cfg = new BetterConfig(this);
+		cfg = new BetterConfig(this, this.getFile());
 		//rethink this
 		if (cfg.getDouble("version") < Double.parseDouble(pdfFile.getVersion()))
 				log.info("[WolfSpawn] config.yml out of date, delete and restart");
@@ -74,7 +72,7 @@ public class WolfSpawn extends JavaPlugin {
 		log.info("["+ pdfFile.getName() + "] version " + pdfFile.getVersion()
 				+ " is enabled!");
 		///////////////////////////////////////////
-		getDatabase();
+		
 	}
 
 	private void setupPermissions() {

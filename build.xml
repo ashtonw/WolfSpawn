@@ -23,7 +23,7 @@
 		<mkdir dir="${dist}"/>
 		<jar jarfile="${dist}/${pluginname}.jar">
 			<fileset dir="${bin}"/>
-			<fileset file="${src}/main/resources/plugin.yml"/>
+			<fileset file="${src}/main/resources/*.*"/>
 		</jar>
 	</target>
 	

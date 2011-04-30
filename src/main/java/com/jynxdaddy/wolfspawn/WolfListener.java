@@ -3,11 +3,6 @@
  */
 package com.jynxdaddy.wolfspawn;
 
-import java.util.logging.Logger;
-
-import net.minecraft.server.EntityWolf;
-
-import org.bukkit.craftbukkit.entity.CraftWolf;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wolf;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -20,12 +15,9 @@ import org.bukkit.event.entity.EntityListener;
 public class WolfListener extends EntityListener {
 
 	private WolfSpawn plugin;
-	@SuppressWarnings("unused")
-	private static Logger log;
 
 	public WolfListener(WolfSpawn plugin) {
 		this.plugin = plugin;
-		WolfListener.log = WolfSpawn.log;
 	}
 
 	/*
@@ -39,10 +31,8 @@ public class WolfListener extends EntityListener {
 	public void onEntityDeath(EntityDeathEvent event) {
 		if (event.getEntity() instanceof Wolf) {
 			Wolf wolf = (Wolf) event.getEntity();
-			
-			//Workaround
-			EntityWolf mcwolf = ((CraftWolf)  wolf).getHandle();
-			String owner = mcwolf.v();
+                        
+                        String owner = (new UpdatedWolf(wolf)).getOwner();
 			
 			Player player = plugin.getServer().getPlayer(owner);
 			

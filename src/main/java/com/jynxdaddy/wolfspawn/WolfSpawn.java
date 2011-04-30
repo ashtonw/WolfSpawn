@@ -29,12 +29,12 @@ import com.nijikokun.bukkit.Permissions.Permissions;
 public class WolfSpawn extends JavaPlugin {
 	
 	private final WolfListener wolfListener = new WolfListener(this);
-	@SuppressWarnings("unused")
-	private final WPlayerListener playerListener = new WPlayerListener(this);
+	
+        //private final WPlayerListener playerListener = new WPlayerListener(this);
 	
 	private final WolfCommand wolfCommand = new WolfCommand(this);
 
-	public static Logger log = Logger.getLogger("Minecraft");
+	public static final Logger log = Logger.getLogger("Minecraft");
 	public BetterConfig cfg;
 	public static PermissionHandler permissions;
 	
@@ -178,7 +178,7 @@ public class WolfSpawn extends JavaPlugin {
 	 * @param msg
 	 */
 	private void sendMsg(Player player, String msg) {
-		if (msg != "") player.sendMessage(msg);
+		if (msg != null && msg.length()>0) player.sendMessage(msg);
 	}
 	
 	public void respawnWolf(Player player, World world, String owner) {

@@ -44,13 +44,13 @@ public class UpdatedWolf {
     }
 
     public boolean isTame() {
-        return getHandle().m_();
+        return getHandle().A();
     }
 
     public void setTame(boolean tame) {
-        if (tame && !wolf.getHandle().m_()) {// if was wild
+        if (tame && !wolf.getHandle().A()) {// if was wild
             wolf.getHandle().health = (int) Math.round(20 * (wolf.getHandle().health / 8.));
-        } else if (!tame && wolf.getHandle().m_()) {
+        } else if (!tame && wolf.getHandle().A()) {
             wolf.getHandle().health = (int) Math.round(8 * (wolf.getHandle().health / 20.));
         }
         wolf.getHandle().d(tame);
@@ -63,14 +63,14 @@ public class UpdatedWolf {
     public void setOwner(String player) {
         EntityWolf e = getHandle();
         if ((player != null) && (player.length() > 0)) {
-            if (!e.m_()) {// if was wild
+            if (!e.A()) {// if was wild
                 e.health = (int) Math.round(20 * (e.health / 8.));
             }
             e.d(true); /* Make him tame */
             e.a((PathEntity) null); /* Clear path */
             e.a(player); /* Set owner */
         } else {
-            if (e.m_()) {// if was tame
+            if (e.A()) {// if was tame
                 e.health = (int) Math.round(8 * (e.health / 20.));
             }
             e.d(false); /* Make him not tame */

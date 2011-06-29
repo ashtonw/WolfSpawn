@@ -44,37 +44,37 @@ public class UpdatedWolf {
     }
 
     public boolean isTame() {
-        return getHandle().A();
+        return getHandle().isTamed();
     }
 
     public void setTame(boolean tame) {
-        if (tame && !wolf.getHandle().A()) {// if was wild
+        if (tame && !wolf.getHandle().isTamed()) {// if was wild
             wolf.getHandle().health = (int) Math.round(20 * (wolf.getHandle().health / 8.));
-        } else if (!tame && wolf.getHandle().A()) {
+        } else if (!tame && wolf.getHandle().isTamed()) {
             wolf.getHandle().health = (int) Math.round(8 * (wolf.getHandle().health / 20.));
         }
-        wolf.getHandle().d(tame);
+        wolf.getHandle().setTamed(tame);
     }
 
     public String getOwner() {
-        return getHandle().x();
+        return getHandle().getOwnerName();
     }
 
     public void setOwner(String player) {
         EntityWolf e = getHandle();
         if ((player != null) && (player.length() > 0)) {
-            if (!e.A()) {// if was wild
+            if (!e.isTamed()) {// if was wild
                 e.health = (int) Math.round(20 * (e.health / 8.));
             }
-            e.d(true); /* Make him tame */
-            e.a((PathEntity) null); /* Clear path */
-            e.a(player); /* Set owner */
+            e.setTamed(true); /* Make him tame */
+            e.setPathEntity((PathEntity) null); /* Clear path */
+            e.setOwnerName(player); /* Set owner */
         } else {
-            if (e.A()) {// if was tame
+            if (e.isTamed()) {// if was tame
                 e.health = (int) Math.round(8 * (e.health / 20.));
             }
-            e.d(false); /* Make him not tame */
-            e.a(""); /* Clear owner */
+            e.setTamed(false); /* Make him not tame */
+            e.setOwnerName(""); /* Clear owner */
         }
     }
 

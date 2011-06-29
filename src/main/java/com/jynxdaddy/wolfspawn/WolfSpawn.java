@@ -54,7 +54,7 @@ public class WolfSpawn extends JavaPlugin {
 		PluginDescriptionFile pdfFile = this.getDescription();
 		cfg = new BetterConfig(this, this.getFile());
 		//rethink this
-		if (cfg.getDouble("version") < Double.parseDouble(pdfFile.getVersion()))
+		if (cfg.getString("version").compareTo(pdfFile.getVersion()) > 0)
 				log.info("[WolfSpawn] config.yml out of date, delete and restart");
 		setupPermissions();
 		
